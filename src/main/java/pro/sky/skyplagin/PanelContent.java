@@ -5,35 +5,31 @@ import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.treeStructure.Tree;
+import io.socket.engineio.client.transports.WebSocket;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.project.Project;
+import io.socket.client.IO;
+import io.socket.client.Socket;
 
-
-import javax.lang.model.element.Element;
 import javax.swing.*;
-import javax.swing.filechooser.FileSystemView;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.tree.*;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.net.URI;
 import java.util.Arrays;
-import java.util.stream.Collectors;
 
 public class PanelContent extends DialogWrapper {
+    Socket socket;
+    IO.Options options = IO.Options.builder().setTransports(new String[]{WebSocket.NAME}).build();
+    URI url = URI.create("wss://ws.postman-echo.com/socketio");
     private JTextField value1TextField;
     private JTextField value2TextField;
     private JButton getResultButton;
     private JButton getSocketButton;
     private JButton getTreeButton;
-    //private JTextArea resultTextArea;
     private JPanel SkyPanel;
     private JFormattedTextField formattedTextField1;
     private JTextArea textArea1;
-
-    //private JFormattedTextField formattedTextField2;
 
     public PanelContent(@Nullable Project project){
         super(true);
@@ -56,10 +52,21 @@ public class PanelContent extends DialogWrapper {
                 String projectName = project.getName();
                 File file = new File(project.getBasePath());
                 StringBuilder sb = new StringBuilder();
-                sb.append(file.getName() + "\n");
+                sb.append(file.getName()).append("\n");
                 int count = 0;
                 doFilePath(count, sb , file.listFiles());
                 textArea1.setText(sb.toString());
+            }
+        });
+
+        getSocketButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                    try {
+                        connectToSocket();
+                    } catch (InterruptedException ex) {
+                        throw new RuntimeException(ex);
+                    }
             }
         });
     }
@@ -76,8 +83,16 @@ public class PanelContent extends DialogWrapper {
         }
     }
 
+    private void connectToSocket() throws InterruptedException {
+        socket = IO.socket(url, options);
+        socket.on(Socket.EVENT_CONNECT, args -> formattedTextField1.setText("socket connected"));
+        socket.on(Socket.EVENT_DISCONNECT, args -> formattedTextField1.setText("socket disabled"));
+        socket.connect();
+    }
+
     @Override
     protected @Nullable JComponent createCenterPanel() {
         return SkyPanel;
     }
+
 }

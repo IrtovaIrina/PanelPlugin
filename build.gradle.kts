@@ -1,3 +1,6 @@
+import org.gradle.internal.impldep.org.junit.experimental.categories.Categories.CategoryFilter.exclude
+import java.util.regex.Pattern.compile
+
 plugins {
     id("java")
     id("org.jetbrains.intellij") version "1.10.1"
@@ -9,7 +12,12 @@ version = "1.0-SNAPSHOT"
 repositories {
     mavenCentral()
 }
+dependencies{
+    implementation ("io.socket:socket.io-client:2.1.0"){
+    }
+    implementation("org.apache.commons:commons-lang3:3.0")
 
+}
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
@@ -39,5 +47,6 @@ tasks {
 
     publishPlugin {
         token.set(System.getenv("PUBLISH_TOKEN"))
+
     }
 }
