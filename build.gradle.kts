@@ -9,7 +9,12 @@ version = "1.0-SNAPSHOT"
 repositories {
     mavenCentral()
 }
+dependencies{
+    implementation ("io.socket:socket.io-client:2.1.0"){
+    }
+    implementation("org.apache.commons:commons-lang3:3.0")
 
+}
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
