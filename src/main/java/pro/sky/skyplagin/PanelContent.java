@@ -49,6 +49,7 @@ public class PanelContent extends DialogWrapper {
                 }
             }
         });
+
         getTreeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
