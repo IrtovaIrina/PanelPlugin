@@ -1,10 +1,7 @@
 package pro.sky.skyplagin;
 
 
-import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.ui.treeStructure.Tree;
 import io.socket.engineio.client.transports.WebSocket;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.project.Project;
@@ -16,7 +13,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.URI;
-import java.util.Arrays;
 
 public class PanelContent extends DialogWrapper {
     Socket socket;
@@ -49,7 +45,6 @@ public class PanelContent extends DialogWrapper {
         getTreeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String projectName = project.getName();
                 File file = new File(project.getBasePath());
                 StringBuilder sb = new StringBuilder();
                 sb.append(file.getName()).append("\n");
@@ -64,18 +59,17 @@ public class PanelContent extends DialogWrapper {
             public void actionPerformed(ActionEvent e) {
                     try {
                         connectToSocket();
-                    } catch (InterruptedException ex) {
-                        throw new RuntimeException(ex);
+                    } catch (Exception exception) {
+                        throw new RuntimeException(exception);
                     }
             }
         });
     }
+
     private void doFilePath(int count , StringBuilder sb, File[] files){
         count++;
         for (File file : files) {
-            for(int i = 0; i < count ;i++){
-                sb.append("---");
-            }
+            sb.append("---".repeat(Math.max(0, count)));
             sb.append(file.getName() + "\n");
             if (file.isDirectory()){
                 doFilePath(count,sb,file.listFiles());
