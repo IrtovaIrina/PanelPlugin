@@ -81,6 +81,7 @@ public class PanelContent extends DialogWrapper {
         socket = IO.socket(url, options);
         socket.on(Socket.EVENT_CONNECT, args -> formattedTextField1.setText("socket connected"));
         socket.on(Socket.EVENT_DISCONNECT, args -> formattedTextField1.setText("socket disabled"));
+        socket.on(Socket.EVENT_CONNECT_ERROR, args -> formattedTextField1.setText("error"));
         socket.connect();
     }
 
